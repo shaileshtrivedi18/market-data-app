@@ -1,25 +1,25 @@
 package com.pritle.assignment1.controller;
 
-import com.pritle.assignment1.dao.QuoteCollectionDao;
-import com.pritle.assignment1.dao.QuoteDao;
-import com.pritle.assignment1.domain.Quote;
-import com.pritle.assignment1.domain.QuoteCollection;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import com.pritle.assignment1.dao.QuoteCollectionDao;
+import com.pritle.assignment1.dao.QuoteDao;
+import com.pritle.assignment1.domain.Quote;
+import com.pritle.assignment1.domain.QuoteCollection;
 
 /**
  * © 2017 Pritle Holding B.V. - All Rights Reserved
@@ -39,9 +39,6 @@ public class MarketdataController {
 
     @Autowired
     private QuoteCollectionDao quoteCollectionDao;
-
-    @Autowired
-    private TransactionTemplate transactionTemplate;
 
     @RequestMapping(value = "/quote/{symbol}", method = GET)
     public ResponseEntity<?> getQoute(@PathVariable String symbol) {
@@ -74,7 +71,6 @@ public class MarketdataController {
         if (quoteCollection == null) {
             return new ResponseEntity<>("[]", HttpStatus.NOT_FOUND);
         } else {
-            log.info("Getting quotes for {}", quoteCollection.getSymbols());
             List<Quote> quotes = quoteDao.list(Arrays.asList(quoteCollection.getSymbols().split(",")));
             return ResponseEntity.ok(quotes);
         }
