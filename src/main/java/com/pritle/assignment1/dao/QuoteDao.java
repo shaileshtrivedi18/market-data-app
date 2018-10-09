@@ -30,13 +30,12 @@ import static java.util.stream.Collectors.joining;
 public class QuoteDao {
 
     private static final String quotesUrl = "http://download.finance.yahoo.com/d/quotes.csv?s={symbolSeq}&f=sl1&e=.csv";
-    private static final Logger log = LoggerFactory.getLogger(MarketdataController.class);
+    private static final Logger log = LoggerFactory.getLogger(QuoteDao.class);
 
     @Autowired
     private RestTemplate restTemplate;
 
     public Quote find(String symbol) {
-        log.info("Getting quote for " + symbol);
         List<Quote> quotes = list(singleton(symbol));
         return quotes.stream().findFirst().orElse(null);
     }
@@ -49,7 +48,7 @@ public class QuoteDao {
         log.debug("Getting quotes for: {}", symbolSeq);
         try {
             String csv = restTemplate.getForObject(quotesUrl, String.class, symbolSeq);
-            System.out.println(csv);
+            log.info(csv);
             return Stream.of(csv.split("\n"))
                     .filter(line -> !line.endsWith("N/A")) //skip not found symbols
                     .map(line -> {
